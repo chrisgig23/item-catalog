@@ -17,6 +17,12 @@ def showCatalog():
     categories = session.query(Category).all()
     return render_template('catalog.html', categories = categories)
 
+@app.route('/catalog/<int: category_id>')
+def showCategory(category_id):
+    category = session.query(Category).filter_by(id = category_id).one()
+    categoryItems = session.query(CategoryItems).filter_by(category_id = category.id)
+
+
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
