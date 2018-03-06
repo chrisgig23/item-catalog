@@ -7,23 +7,30 @@
 
   <h2>Edit Item</h2>
 
-<form>
+<form action="{{ url_for('editItem', category_id=category_id, item_id=item_id) }}" method='post'>
   <p>Title</p>
-  <input type='text' size=30 name=title placeholder='Item Title'>
+  <input type='text' size='30' name='title' placeholder='{{ item.name }}'>
 </br>
 
   <p>Description</p>
-  <input type='text' size=30 name=description placeholder='Description'>
+  <input type='text' size='30' name='description' placeholder='{{ item.description }}'>
 </br>
 
   <p>Category</p>
   <select name='category'>
-    <option value="soccer">Soccer</option>
+    {% for c in listOfCategories %}
+      {% if category_id == c.id: %}
+        <option value="{{ c.id }}" selected>{{ c.name }}</option>
+      {% else %}
+        <option value="{{ c.id }}">{{ c.name }}</option>
+      {% endif %}
+    {%endfor%}
   </select>
   <!-- items belonging to this category go here -->
 
-  <input type='submit' name='Submit'>
+  <input type='submit' value='Submit'>
 
+  <a href="{{ url_for('showCategory', category_id=category_id)}}">Cancel</a>
   <!-- Cancel link goes here  -->
 </form>
 </body>
