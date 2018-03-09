@@ -1,0 +1,26 @@
+<html>
+<head>
+</head>
+
+<body>
+  <h1>Catalog App</h1>
+
+  <a href="{{ url_for('newItem', category_id = category.id) }}">Add New Item</a>
+</br>
+  <a href="{{ url_for('showCatalog') }}">Main Menu</a>
+
+  <h1>{{ category.name }}</h1>
+  <h2>Items</h2>
+
+  {%if items.count() != 0: %}
+    {% for i in items %}
+      <!-- items belonging to this category go here -->
+      <a href=" {{url_for('showItem', category_id=category.id, item_id=i.id)}}">{{ i.name }}</a>
+      </br>
+    {% endfor %}
+  {%else%}
+    <p>No items in this category. Click Add New Item above to add your first item.</p>
+  {%endif%}
+</body>
+
+</html>

@@ -1,0 +1,24 @@
+<html>
+<head>
+</head>
+
+<body>
+  <h1>Catalog App</h1>
+
+  {{ item.description }}
+  <p style="margin-top:0px;">
+    <a href="{{ url_for('editItem', category_id=category.id, item_id=item.id) }}">Edit</a>
+    |
+    <a href="{{ url_for('deleteItem', category_id=category.id, item_id=item.id) }}">Delete</a>
+  </p>
+</br>
+
+  <h2>{Item_Name}</h2>
+
+  <h2>{Item_Description}</h2>
+
+  <!-- If logged in display edit and delete -->
+
+</body>
+
+</html>
