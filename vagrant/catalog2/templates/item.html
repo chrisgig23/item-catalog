@@ -5,7 +5,9 @@
 <body>
   <h1>Catalog App</h1>
 
-  {{ item.description }}
+  <h2>{{ item.name }}</h2>
+
+  <p>{{ item.description }}</p>
   <p style="margin-top:0px;">
     <a href="{{ url_for('editItem', category_id=category.id, item_id=item.id) }}">Edit</a>
     |
@@ -13,9 +15,7 @@
   </p>
 </br>
 
-  <h2>{Item_Name}</h2>
-
-  <h2>{Item_Description}</h2>
+<a href="{{ url_for('showCategory', category_id=category.id) }}">Back</a>
 
   <!-- If logged in display edit and delete -->
 

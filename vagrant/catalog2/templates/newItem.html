@@ -19,6 +19,7 @@
     <p>Category</p>
     <select name='category'>
       {% for c in listOfCategories %}
+        <!-- Selects the current category to add item to -->
         {% if category_id == c.id: %}
           <option value="{{ c.id }}" selected>{{ c.name }}</option>
         {% else %}
