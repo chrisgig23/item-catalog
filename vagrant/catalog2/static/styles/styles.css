@@ -1,0 +1,33 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: lightgray;
+  font-family: "Barlow Condensed", sans-serif;
+}
+
+.header-container {
+  border-bottom: 1px solid black;
+  display: flex;
+  justify-content: space-between;
+  background-color: #2f5da8;
+}
+
+
+/* DESKTOP STYLES */
+.main-header {
+  padding: 5px 10%;
+}
+
+.page-container {
+  padding: 5px 10%;
+  border: 1px solid black;
+  background-color: white;
+}
+
+body {
+    /*padding: 5px 10%;*/
+}
