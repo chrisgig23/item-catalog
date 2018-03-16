@@ -15,7 +15,8 @@ session = DBSession()
 @app.route('/catalog/')
 def showCatalog():
     categories = session.query(Category).all()
-    return render_template('catalog.html', categories = categories)
+    items = session.query(CategoryItem).order_by(CategoryItem.timeAdded.desc()).limit(10).all()
+    return render_template('catalog.html', categories = categories, items = items)
 
 @app.route('/catalog/<int:category_id>')
 def showCategory(category_id):

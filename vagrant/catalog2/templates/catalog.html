@@ -1,19 +1,40 @@
 <html>
 <head>
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles/styles.css') }}">
 </head>
 
 <body>
-  <h1>Catalog App</h1>
+  <div class="page">
+    <div class="header-container">
+      <a href="{{ url_for('showCatalog') }}"><h1 class="main-header">Catalog App</h1></a>
+      <button class="login">Login</button>
+    </div>
 
-  <h2>Categories</h2>
-  {%for c in categories%}
+    <div class = "page-container">
+      <div class = "page-content">
+        <div class = "categories">
+          <h2>Categories</h2>
+          {%for c in categories%}
 
-  <a href="{{ url_for('showCategory', category_id=c.id) }}"><h2>{{ c.name }}</h2></a>
-  {%endfor%}
-  <h2>Latest Items</h2>
+            <a href="{{ url_for('showCategory', category_id=c.id) }}"><h2>{{ c.name }}</h2></a>
 
-  <!-- Most recently added items go here -->
+          {%endfor%}
+        </div>
 
+        <div class="items-column">
+          <h2>Latest Items</h2>
+          <div class="latest-items">
+            {% for i in items %}
+
+              <a href="{{ url_for('showItem', category_id = i.category_id, item_id=i.id)}}">{{ i.name }} ({{ i.category.name }})</a>
+
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Most recently added items go here -->
+  </div>
 </body>
 
 </html>
