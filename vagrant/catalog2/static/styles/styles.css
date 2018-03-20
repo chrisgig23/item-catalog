@@ -6,15 +6,12 @@
 
 body {
   font-family: "Barlow Condensed", sans-serif;
+  background-color: lightgray;
 }
 
 a {
   text-decoration: none;
   color: darkred;
-}
-
-.page {
-  background-color: lightgray;
 }
 
 .header-container {
@@ -24,31 +21,62 @@ a {
   background-color: #2f5da8;
 }
 
+
 /* DESKTOP STYLES */
+.page-links {
+  display: flex;
+  justify-content: center;
+}
+
 .main-header {
-  padding: 5px 10%;
+  padding: 5px 10px;
   color:darkred;
 }
 
 .login {
   width: 100px;
+  height: 27px;
   margin: 10px;
 }
 
-.page-container {
-  display:flex;
-  justify-content: center;
-
+.page-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.page-content {
+.page-links {
+  flex-direction: row;
+  justify-content: space-between;
+  width: 300px;
+  text-decoration: underline;
   border: 1px solid black;
   background-color: white;
-  padding: 0px 20%;
-  display: flex;
-  justify-content: flex-start;
+  padding: 5px;
+  margin: 5px;
 }
 
+.page-content{
+  border: 1px solid black;
+  background-color: white;
+  width: 700px;
+  /*height: 280px;*/
+  display:flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: 5px;
+}
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/*.vl {
+  border-left: 1px solid black;
+  height: 80%;
+  margin-top: 20px;
+}*/
 
 body {
     /*padding: 5px 10%;*/

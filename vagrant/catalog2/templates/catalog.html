@@ -10,9 +10,9 @@
       <button class="login">Login</button>
     </div>
 
-    <div class = "page-container">
+    <div class="page-info">
       <div class = "page-content">
-        <div class = "categories">
+        <div class = "category-sidebar">
           <h2>Categories</h2>
           {%for c in categories%}
 
@@ -21,9 +21,11 @@
           {%endfor%}
         </div>
 
+        <!-- <div class="vl"></div> -->
+
         <div class="items-column">
           <h2>Latest Items</h2>
-          <div class="latest-items">
+          <div class="items-list">
             {% for i in items %}
 
               <a href="{{ url_for('showItem', category_id = i.category_id, item_id=i.id)}}">{{ i.name }} ({{ i.category.name }})</a>
