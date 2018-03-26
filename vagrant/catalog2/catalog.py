@@ -46,12 +46,12 @@ def newItem(category_id):
 def editItem(category_id, item_id):
     editedItem = session.query(CategoryItem).filter_by(id=item_id).one()
     if request.method == 'POST':
-        if request.form['name']:
-            editedItem.name = request.form['name']
+        if request.form['title']:
+            editedItem.name = request.form['title']
         if request.form['description']:
             editedItem.description = request.form['description']
-        # if request.form['course']:
-        #     editedItem.course = request.form['course']
+        if request.form['category']:
+            editedItem.category_id = request.form['category']
 
         session.add(editedItem)
         session.commit()

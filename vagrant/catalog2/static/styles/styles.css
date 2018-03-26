@@ -39,11 +39,34 @@ a {
   margin: 10px;
 }
 
+.page-header {
+  font-weight: bold;
+  margin: 10px;
+}
+
 .page-info {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding:5px;
 }
+
+.description {
+  width: 100%;
+}
+
+.category-select {
+  display: flex;
+  justify-content: center;
+}
+
+.cancel {
+  font-size: 13px;
+}
+/*input {
+  width: 100%;
+  height: 20px;
+}*/
 
 .page-links {
   flex-direction: row;
@@ -56,13 +79,34 @@ a {
   margin: 5px;
 }
 
-.page-content{
+.item-form{
+  padding: 5px;
+  display: flex;
+  width:100%;
+  justify-content: flex-start;
+}
+
+.form-header {
+  padding: 5px;
+  text-align: center;
+}
+
+.page-content {
   border: 1px solid black;
   background-color: white;
   width: 700px;
-  /*height: 280px;*/
   display:flex;
   flex-direction: row;
+  justify-content: flex-start;
+  padding: 5px;
+}
+
+.item-info {
+  border: 1px solid black;
+  background-color: white;
+  width: 75%;
+  display:flex;
+  flex-direction: column;
   justify-content: flex-start;
   padding: 5px;
 }
@@ -72,12 +116,49 @@ a {
   flex-direction: column;
 }
 
-/*.vl {
+.items-column {
   border-left: 1px solid black;
-  height: 80%;
-  margin-top: 20px;
+  padding-left: 10px;
+}
+/*.item-header {
+  font-size: 15px;
 }*/
 
-body {
-    /*padding: 5px 10%;*/
+.item-footer {
+  border: 1px solid black;
+  background-color: white;
+  /*width: 50px;*/
+  display: flex;
+  justify-content: center;
+  padding: 1px 5px;
+  margin: 10px;
+}
+
+.category-sidebar {
+  margin-right: 20px;
+}
+
+/*.edit-page {
+  display: flex;
+  justify-content: center;
+}*/
+
+.form-buttons {
+  border: 1px solid black;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.delete {
+  margin: 10px;
+  width: 189px;
+}
+
+.delete-item {
+  margin: 10px;
+  font-size: 20px;
+  color: red;
 }

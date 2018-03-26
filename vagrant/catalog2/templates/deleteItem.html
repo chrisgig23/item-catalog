@@ -4,19 +4,32 @@
 </head>
 
 <body>
-  <h1>Catalog App</h1>
+  <div class="page">
+    <div class="header-container">
+      <a href="{{ url_for('showCatalog') }}"><h1 class="main-header">Catalog App</h1></a>
+      <button class="login">Login</button>
+    </div>
 
-  <h2>Delete Item</h2>
+    <div class="delete-page-info">
+      <div class="page-header">
+        <h2>Delete Item</h2>
+      </div>
 
-  <p>Are you sure you want to delete {{ item.name }}?</p>
+      <div class="delete-item">
+        <p>Are you sure you want to delete {{ item.name }}?</p>
+      </div>
 
-<form action="{{ url_for('deleteItem', category_id=category_id, item_id=item_id) }}" method='post'>
+      <form action="{{ url_for('deleteItem', category_id=category_id, item_id=item_id) }}" method='post'>
 
-  <input type='submit' name='Delete'>
+        <div class="form-buttons delete">
+          <input type='submit' value='Delete'>
 
-  <!-- Cancel link goes here  -->
-  <a href="{{ url_for('showCategory', category_id=category_id)}}">Cancel</a>
-</form>
+          <!-- Cancel link goes here  -->
+          <a class="cancel" href="{{ url_for('showCategory', category_id=category_id)}}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
 </body>
 
 </html>

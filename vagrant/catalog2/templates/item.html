@@ -4,22 +4,35 @@
 </head>
 
 <body>
-  <h1>Catalog App</h1>
+  <div class="page">
+    <div class="header-container">
+      <a href="{{ url_for('showCatalog') }}"><h1 class="main-header">Catalog App</h1></a>
+      <button class="login">Login</button>
+    </div>
 
-  <h2>{{ item.name }}</h2>
+    <div class="page-info">
+      <div class="page-links">
+        <a href="{{ url_for('editItem', category_id=category.id, item_id=item.id) }}">Edit</a>
+        |
+        <a href="{{ url_for('deleteItem', category_id=category.id, item_id=item.id) }}">Delete</a>
+      </div>
 
-  <p>{{ item.description }}</p>
-  <p style="margin-top:0px;">
-    <a href="{{ url_for('editItem', category_id=category.id, item_id=item.id) }}">Edit</a>
-    |
-    <a href="{{ url_for('deleteItem', category_id=category.id, item_id=item.id) }}">Delete</a>
-  </p>
-</br>
+      <div class="item-info">
+        <div class="item-header">
+          <h2>{{ item.name }}</h2>
+        </div>
 
-<a href="{{ url_for('showCategory', category_id=category.id) }}">Back</a>
+        <div class="item-description">
+          {{ item.description }}
+        </div>
+      </div>
 
-  <!-- If logged in display edit and delete -->
-
+      <div class="item-footer">
+        <a href="{{ url_for('showCategory', category_id=category.id) }}">Back</a>
+      </div>
+    </div>
+    <!-- If logged in display edit and delete -->
+</div>
 </body>
 
 </html>
