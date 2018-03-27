@@ -5,11 +5,22 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, CategoryItem
 
+from flask import session as login_session
+import random, string
+
 engine = create_engine('sqlite:///catalog.db')
 Base.metadata.bind = create_engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+# Login
+@app.route('/login')
+def showLogin():
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+    login_session['state'] = state
+    return "The current session state is %s" % login_session['state']
+
 
 @app.route('/')
 @app.route('/catalog/')
