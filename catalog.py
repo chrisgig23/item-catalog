@@ -189,6 +189,9 @@ def newItem(category_id):
 
 @app.route('/catalog/<int:category_id>/<int:item_id>/edit', methods=['GET', 'POST'])
 def editItem(category_id, item_id):
+    if 'username' not in login_session:
+        # alert("You must be logged in to do that.")
+        return redirect('/login')
     editedItem = session.query(CategoryItem).filter_by(id=item_id).one()
     if request.method == 'POST':
         if request.form['title']:
@@ -207,6 +210,9 @@ def editItem(category_id, item_id):
 
 @app.route('/catalog/<int:category_id>/<int:item_id>/delete', methods=['GET', 'POST'])
 def deleteItem(category_id, item_id):
+    if 'username' not in login_session:
+        # alert("You must be logged in to do that.")
+        return redirect('/login')
     deletedItem = session.query(CategoryItem).filter_by(id=item_id).one()
     if request.method == 'POST':
         session.delete(deletedItem)
