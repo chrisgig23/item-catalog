@@ -138,6 +138,9 @@ a {
   margin-right: 20px;
 }
 
+#signinButton {
+  margin: 10px;
+}
 /*.edit-page {
   display: flex;
   justify-content: center;
