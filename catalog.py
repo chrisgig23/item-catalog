@@ -32,6 +32,7 @@ def showLogin():
     login_session['state'] = state
     return render_template('login.html', STATE=state)
 
+
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
