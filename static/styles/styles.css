@@ -33,10 +33,17 @@ a {
   color:darkred;
 }
 
-.login {
-  width: 100px;
-  height: 27px;
+.login-logout {
+  background-color: white;
+  font-size: 15px;
   margin: 10px;
+  padding: 5px 7px;
+  border-radius: 10px;
+  /*width: 0px;*/
+}
+
+.welcome {
+  padding: 5px 5px 0px 0px;
 }
 
 .page-header {

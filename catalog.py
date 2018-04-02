@@ -3,7 +3,7 @@ app = Flask(__name__)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Category, CategoryItem
+from database_setup import Base, Category, CategoryItem, User
 
 from flask import session as login_session
 import random, string
@@ -19,7 +19,7 @@ CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Sporting Goods Application"
 
-engine = create_engine('sqlite:///catalog.db')
+engine = create_engine('sqlite:///catalogwithusers.db')
 Base.metadata.bind = create_engine
 
 DBSession = sessionmaker(bind=engine)
@@ -158,7 +158,7 @@ def gdisconnect():
 def showCatalog():
     categories = session.query(Category).all()
     items = session.query(CategoryItem).order_by(CategoryItem.timeAdded.desc()).limit(10).all()
-    return render_template('catalog.html', categories = categories, items = items)
+    return render_template('catalog.html', categories = categories, items = items, session=login_session)
 
 @app.route('/catalog/<int:category_id>')
 def showCategory(category_id):
@@ -220,6 +220,13 @@ def deleteItem(category_id, item_id):
         return redirect(url_for('showCategory', category_id = category_id))
     else:
         return render_template('deleteItem.html', category_id=category_id, item_id=item_id, item=deletedItem)
+
+def createUser(login_session):
+    newUser = User(name = login_session['username'], email = login_session['email'], picture = login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email = login_session['email']).one()
+    return user.id
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'

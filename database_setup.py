@@ -7,11 +7,37 @@ from sqlalchemy import create_engine
 
 Base = declarative_base()
 
+class User(Base):
+    __tablename__ = 'user'
+
+    name = Column(String(80), nullable = False)
+    picture = Column(String(250), nullable = False)
+    email = Column(String(250))
+    id = Column(Integer, primary_key = True)
+
+    @property
+    def serialize(self):
+        return {
+            'name'      : self.name,
+            'picture'   : self.picture,
+            'email'     : self.email,
+            'id'        : self.id
+    }
+
 class Category(Base):
     __tablename__ = 'category'
 
     name = Column(String(80), nullable = False)
     id = Column(Integer, primary_key = True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
+
+    @property
+    def serialize(self):
+        return {
+            'name'  : self.name,
+            'id'    : self.id,
+    }
 
 class CategoryItem(Base):
     __tablename__ = 'item'
@@ -22,8 +48,18 @@ class CategoryItem(Base):
     timeAdded = Column(DateTime, default=datetime.datetime.utcnow())
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
 
+    @property
+    def serialize(self):
+        return {
+            'name'          : self.name,
+            'id'            : self.id,
+            'description'   : self.description,
+            'timeAdded'     : self.timeAdded
+    }
 
-engine = create_engine('sqlite:///catalog.db')
+engine = create_engine('sqlite:///catalogwithusers.db')
 
 Base.metadata.create_all(engine)

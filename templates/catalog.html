@@ -7,7 +7,21 @@
   <div class="page">
     <div class="header-container">
       <a href="{{ url_for('showCatalog') }}"><h1 class="main-header">Catalog App</h1></a>
-      <a href="{{ url_for('showLogin') }}" class="login">Login</a>
+
+      <div class="session-status">
+        {% if 'username' not in session: %}
+          <div class="login-logout">
+            <a href="{{ url_for('showLogin') }}">Login</a>
+          </div>
+        {% else %}
+          <div class="welcome">
+            <p>Hello, {{ session.username }}</p>
+          </div>
+          <div class="login-logout">
+            <a href="{{ url_for('gdisconnect') }}">Logout</a>
+          </div>
+        {% endif %}
+      </div>
     </div>
 
     <div class="page-info">
