@@ -75,6 +75,26 @@ a {
   height: 20px;
 }*/
 
+.creator-info {
+  display: flex;
+  align-items: center;
+  border: 1px solid black;
+  background-color: white;
+  padding: 5px;
+  margin-top: 5px;
+}
+
+.header-img {
+  width: 100%;
+  height: 198px;
+}
+
+.creator-img {
+  max-width: 40px;
+  max-height: 40px;
+  padding: 5px;
+}
+
 .page-links {
   flex-direction: row;
   justify-content: space-between;
@@ -84,6 +104,10 @@ a {
   background-color: white;
   padding: 5px;
   margin: 5px;
+}
+
+.public {
+  justify-content: center;
 }
 
 .item-form{

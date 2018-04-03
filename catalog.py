@@ -170,13 +170,21 @@ def showCategory(category_id):
     categories = session.query(Category).all()
     category = session.query(Category).filter_by(id = category_id).one()
     categoryItems = session.query(CategoryItem).filter_by(category_id = category.id)
-    return render_template('category.html', categories=categories, category = category, items = categoryItems)
+
+    if 'username' not in login_session:
+        return render_template('publiccategory.html', categories=categories, category = category, items = categoryItems)
+    else:
+        return render_template('category.html', categories=categories, category = category, items = categoryItems)
 
 @app.route('/catalog/<int:category_id>/<int:item_id>')
 def showItem(category_id, item_id):
     category = session.query(Category).filter_by(id = category_id).one()
     item = session.query(CategoryItem).filter_by(id = item_id).one()
-    return render_template('item.html', category=category, item=item)
+    creator = getUserInfo(category.user_id)
+    if 'username' not in login_session or creator.id != login_session['user_id']:
+        return render_template('publicitem.html', category=category, item=item)
+    else:
+        return render_template('item.html', category=category, item=item, creator=creator)
 
 @app.route('/catalog/<int:category_id>/new', methods=['GET', 'POST'])
 def newItem(category_id):
