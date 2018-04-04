@@ -155,7 +155,27 @@ def gdisconnect():
 @app.route('/logout')
 def logout():
     return render_template('logout.html')
-#JSON APIs to view sporting goods information
+
+
+# JSON APIs to view Sporting Goods Information
+@app.route('/catalog/<int:category_id>/JSON')
+def categoryJSON(category_id):
+    # category = session.query(Category).filter_by(id=category_id).one()
+    categoryItems = session.query(CategoryItem).filter_by(
+        category_id=category_id).all()
+    return jsonify(categoryItems=[c.serialize for c in categoryItems])
+
+
+@app.route('/catalog/<int:category_id>/<int:item_id>/JSON')
+def categoryItemJSON(category_id, item_id):
+    category_item = session.query(CategoryItem).filter_by(id=item_id).one()
+    return jsonify(category_item=category_item.serialize)
+
+
+@app.route('/catalog/JSON')
+def catalogJSON():
+    categories = session.query(Category).all()
+    return jsonify(categories=[c.serialize for c in categories])
 
 
 
