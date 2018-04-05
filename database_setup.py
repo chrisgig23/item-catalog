@@ -67,5 +67,3 @@ class CategoryItem(Base):
 engine = create_engine('sqlite:///catalogwithusers.db')
 
 Base.metadata.create_all(engine)
-
-print "Database Setup Complete!"
