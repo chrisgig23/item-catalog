@@ -146,6 +146,7 @@ def gdisconnect():
     result = h.request(url, 'GET')[0]
     print 'result is '
     print result
+    # If disconnect is successful, delete all user items
     if result['status'] == '200':
         del login_session['access_token']
         del login_session['gplus_id']
@@ -243,7 +244,7 @@ def showItem(category_name, item_name):
 @app.route('/catalog/<string:category_name>/new', methods=['GET', 'POST'])
 def newItem(category_name):
     if 'username' not in login_session:
-        # output=("You must be logged in to do that.")
+        flash("You must be logged in to do that")
         return redirect('/login')
     if request.method == 'POST':
         category = session.query(Category).filter_by(name=category_name).one()
@@ -253,6 +254,7 @@ def newItem(category_name):
                             category_id=category.id)
         session.add(newItem)
         session.commit()
+        flash("New item successfully added")
         return redirect(url_for('showCategory', category_name=category_name))
     else:
         listOfCategories = session.query(Category).all()
@@ -266,8 +268,12 @@ def newItem(category_name):
            methods=['GET', 'POST'])
 def editItem(category_name, item_name):
     if 'username' not in login_session:
-        # alert("You must be logged in to do that.")
+        flash("You must be logged in to do that")
         return redirect('/login')
+    creator = getUserInfo(category.user_id)
+    if (creator.id != login_session['user_id']):
+        flash("You are not authorized to edit this item.")
+        return redirect(url_for('showCategory', category_name=category_name))
     editedItem = session.query(CategoryItem).filter_by(name=item_name).one()
     if request.method == 'POST':
         if request.form['title']:
@@ -279,6 +285,7 @@ def editItem(category_name, item_name):
 
         session.add(editedItem)
         session.commit()
+        flash("Item successfully edited")
         return redirect(url_for('showCategory', category_name=category_name))
     else:
         listOfCategories = session.query(Category).all()
@@ -294,12 +301,16 @@ def editItem(category_name, item_name):
            methods=['GET', 'POST'])
 def deleteItem(category_name, item_name):
     if 'username' not in login_session:
-        # alert("You must be logged in to do that.")
+        flash("You must be logged in to do that")
         return redirect('/login')
+    if (creator.id != login_session['user_id']):
+        flash("You are not authorized to delete this item.")
+        return redirect(url_for('showCategory', category_name=category_name))
     deletedItem = session.query(CategoryItem).filter_by(name=item_name).one()
     if request.method == 'POST':
         session.delete(deletedItem)
         session.commit()
+        flash("Item successfully deleted")
         return redirect(url_for('showCategory', category_name=category_name))
     else:
         return render_template(
