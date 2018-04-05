@@ -30,7 +30,7 @@
         </div>
 
         <div class="item-form">
-          <form action="{{ url_for('editItem', category_id=category_id, item_id=item_id) }}" method='post'>
+          <form action="{{ url_for('editItem', category_name=category_name, item_name=item_name) }}" method='post'>
 
             <div class="form-header"><p>Title</p></div>
             <input type='text' size='30' name='title' placeholder='{{ item.name }}'>
@@ -44,7 +44,7 @@
             <div class="category-select">
               <select name='category'>
                 {% for c in listOfCategories %}
-                  {% if category_id == c.id: %}
+                  {% if category_name == c.name: %}
                     <option value="{{ c.id }}" selected>{{ c.name }}</option>
                   {% else %}
                     <option value="{{ c.id }}">{{ c.name }}</option>
@@ -56,7 +56,7 @@
             <div class="form-buttons">
               <input type='submit' value='Submit'>
 
-              <a class="cancel" href="{{ url_for('showCategory', category_id=category_id)}}">Cancel</a>
+              <a class="cancel" href="{{ url_for('showCategory', category_name=category_name)}}">Cancel</a>
               <!-- Cancel link goes here  -->
             </div>
           </form>

@@ -1,6 +1,6 @@
 import sys
 import datetime
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -32,6 +32,8 @@ class Category(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
+    UniqueConstraint('name')
+
     @property
     def serialize(self):
         return {
@@ -51,6 +53,8 @@ class CategoryItem(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
+    UniqueConstraint('name')
+
     @property
     def serialize(self):
         return {
@@ -63,3 +67,5 @@ class CategoryItem(Base):
 engine = create_engine('sqlite:///catalogwithusers.db')
 
 Base.metadata.create_all(engine)
+
+print "Database Setup Complete!"

@@ -26,8 +26,6 @@
 
     <div class="page-info">
       <div class="public page-links">
-        <!-- <a class="new-item" href="{{ url_for('newItem', category_id = category.id) }}">Add New Item</a> -->
-
         <a class="main-menu" href="{{ url_for('showCatalog') }}">Main Menu</a>
       </div>
 
@@ -36,7 +34,7 @@
           <h2>Categories</h2>
           {%for c in categories%}
 
-            <a href="{{ url_for('showCategory', category_id=c.id) }}"><h2>{{ c.name }}</h2></a>
+            <a href="{{ url_for('showCategory', category_name=c.name) }}"><h2>{{ c.name }}</h2></a>
 
           {%endfor%}
         </div>
@@ -52,7 +50,7 @@
             {%if items.count() != 0: %}
               {% for i in items %}
                 <!-- items belonging to this category go here -->
-                <a href=" {{url_for('showItem', category_id=category.id, item_id=i.id)}}">{{ i.name }}</a>
+                <a href=" {{url_for('showItem', category_name=i.category.name, item_name=i.name)}}">{{ i.name }}</a>
               {% endfor %}
             {%else%}
               <p>No items in this category. Please login to add your first item.</p>

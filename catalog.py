@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask,render_template,request,redirect,url_for,flash,jsonify
 app = Flask(__name__)
 
 from sqlalchemy import create_engine
@@ -117,7 +117,7 @@ def gconnect():
     output += '<img src="'
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("you are now logged in as %s" % login_session['username'])
+    # flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
 
@@ -187,10 +187,10 @@ def showCatalog():
     items = session.query(CategoryItem).order_by(CategoryItem.timeAdded.desc()).limit(10).all()
     return render_template('catalog.html', categories = categories, items = items, session=login_session)
 
-@app.route('/catalog/<int:category_id>')
-def showCategory(category_id):
+@app.route('/catalog/<string:category_name>')
+def showCategory(category_name):
     categories = session.query(Category).all()
-    category = session.query(Category).filter_by(id = category_id).one()
+    category = session.query(Category).filter_by(name = category_name).one()
     categoryItems = session.query(CategoryItem).filter_by(category_id = category.id)
 
     if 'username' not in login_session:
@@ -198,36 +198,37 @@ def showCategory(category_id):
     else:
         return render_template('category.html', categories=categories, category = category, items = categoryItems)
 
-@app.route('/catalog/<int:category_id>/<int:item_id>')
-def showItem(category_id, item_id):
-    category = session.query(Category).filter_by(id = category_id).one()
-    item = session.query(CategoryItem).filter_by(id = item_id).one()
+@app.route('/catalog/<string:category_name>/<string:item_name>')
+def showItem(category_name, item_name):
+    category = session.query(Category).filter_by(name = category_name).one()
+    item = session.query(CategoryItem).filter_by(name = item_name).one()
     creator = getUserInfo(category.user_id)
     if 'username' not in login_session or creator.id != login_session['user_id']:
         return render_template('publicitem.html', category=category, item=item)
     else:
         return render_template('item.html', category=category, item=item, creator=creator)
 
-@app.route('/catalog/<int:category_id>/new', methods=['GET', 'POST'])
-def newItem(category_id):
+@app.route('/catalog/<string:category_name>/new', methods=['GET', 'POST'])
+def newItem(category_name):
     if 'username' not in login_session:
-        # alert("You must be logged in to do that.")
+        # output = ("You must be logged in to do that.")
         return redirect('/login')
     if request.method == 'POST':
-        newItem = CategoryItem(name = request.form['title'], description = request.form['description'], category_id = category_id)
+        category = session.query(Category).filter_by(name=category_name).one()
+        newItem = CategoryItem(name = request.form['title'], description = request.form['description'], category_id = category.id)
         session.add(newItem)
         session.commit()
-        return redirect(url_for('showCategory', category_id = category_id))
+        return redirect(url_for('showCategory', category_name = category_name))
     else:
         listOfCategories = session.query(Category).all()
-        return render_template('newItem.html', category_id = category_id, listOfCategories = listOfCategories)
+        return render_template('newItem.html', category_name = category_name, listOfCategories = listOfCategories)
 
-@app.route('/catalog/<int:category_id>/<int:item_id>/edit', methods=['GET', 'POST'])
-def editItem(category_id, item_id):
+@app.route('/catalog/<string:category_name>/<string:item_name>/edit', methods=['GET', 'POST'])
+def editItem(category_name, item_name):
     if 'username' not in login_session:
         # alert("You must be logged in to do that.")
         return redirect('/login')
-    editedItem = session.query(CategoryItem).filter_by(id=item_id).one()
+    editedItem = session.query(CategoryItem).filter_by(name=item_name).one()
     if request.method == 'POST':
         if request.form['title']:
             editedItem.name = request.form['title']
@@ -238,23 +239,23 @@ def editItem(category_id, item_id):
 
         session.add(editedItem)
         session.commit()
-        return redirect(url_for('showCategory', category_id = category_id))
+        return redirect(url_for('showCategory', category_name = category_name))
     else:
         listOfCategories = session.query(Category).all()
-        return render_template('editItem.html', category_id=category_id, item_id=item_id, item = editedItem, listOfCategories = listOfCategories)
+        return render_template('editItem.html', category_name=category_name, item_name=item_name, item = editedItem, listOfCategories = listOfCategories)
 
-@app.route('/catalog/<int:category_id>/<int:item_id>/delete', methods=['GET', 'POST'])
-def deleteItem(category_id, item_id):
+@app.route('/catalog/<string:category_name>/<string:item_name>/delete', methods=['GET', 'POST'])
+def deleteItem(category_name, item_name):
     if 'username' not in login_session:
         # alert("You must be logged in to do that.")
         return redirect('/login')
-    deletedItem = session.query(CategoryItem).filter_by(id=item_id).one()
+    deletedItem = session.query(CategoryItem).filter_by(name=item_name).one()
     if request.method == 'POST':
         session.delete(deletedItem)
         session.commit()
-        return redirect(url_for('showCategory', category_id = category_id))
+        return redirect(url_for('showCategory', category_name = category_name))
     else:
-        return render_template('deleteItem.html', category_id=category_id, item_id=item_id, item=deletedItem)
+        return render_template('deleteItem.html', category_name = category_name, item_name=item_name, item=deletedItem)
 
 def createUser(login_session):
     newUser = User(name = login_session['username'], email = login_session['email'], picture = login_session['picture'])

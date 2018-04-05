@@ -26,9 +26,9 @@
 
     <div class="page-info">
       <div class="page-links">
-        <a href="{{ url_for('editItem', category_id=category.id, item_id=item.id) }}">Edit</a>
+        <a href="{{ url_for('editItem', category_name=category.name, item_name=item.name) }}">Edit</a>
         |
-        <a href="{{ url_for('deleteItem', category_id=category.id, item_id=item.id) }}">Delete</a>
+        <a href="{{ url_for('deleteItem', category_name=category.name, item_name=item.name) }}">Delete</a>
       </div>
 
       <div class="item-info">
@@ -47,7 +47,7 @@
       </div>
 
       <div class="item-footer">
-        <a href="{{ url_for('showCategory', category_id=category.id) }}">Back</a>
+        <a href="{{ url_for('showCategory', category_name=category.name) }}">Back</a>
       </div>
     </div>
     <!-- If logged in display edit and delete -->

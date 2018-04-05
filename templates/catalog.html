@@ -30,7 +30,7 @@
           <h2>Categories</h2>
           {%for c in categories%}
 
-            <a href="{{ url_for('showCategory', category_id=c.id) }}"><h2>{{ c.name }}</h2></a>
+            <a href="{{ url_for('showCategory', category_name=c.name) }}"><h2>{{ c.name }}</h2></a>
 
           {%endfor%}
         </div>
@@ -42,7 +42,7 @@
           <div class="items-list">
             {% for i in items %}
 
-              <a href="{{ url_for('showItem', category_id = i.category_id, item_id=i.id)}}">{{ i.name }} ({{ i.category.name }})</a>
+              <a href="{{ url_for('showItem', category_name = i.category.name, item_name=i.name)}}">{{ i.name }} ({{ i.category.name }})</a>
 
             {% endfor %}
           </div>
