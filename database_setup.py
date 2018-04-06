@@ -32,8 +32,6 @@ class Category(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
-    UniqueConstraint('name')
-
     @property
     def serialize(self):
         return {
@@ -52,8 +50,6 @@ class CategoryItem(Base):
     category = relationship(Category)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
-
-    UniqueConstraint('name')
 
     @property
     def serialize(self):

@@ -189,3 +189,16 @@ a {
   font-size: 20px;
   color: red;
 }
+
+.flash {
+  margin-top: 10px;
+  animation: blinker 1s linear 2;
+  display: flex;
+  justify-content: center;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}

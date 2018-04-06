@@ -37,7 +37,7 @@
         {% endif %}
       {% endwith %}
     </div>
-    
+
     <div class="page-info">
       <div class="page-links">
         <a class="new-item" href="{{ url_for('newItem', category_name = category.name) }}">Add New Item</a>
@@ -75,10 +75,11 @@
         </div>
 
       </div>
+
+      <div class="item-footer">
+        <a href="{{ url_for('deleteCategory', category_name=category.name) }}">Delete Category</a>
+      </div>
     </div>
-  </div>
-
-
   </div>
 </body>
 

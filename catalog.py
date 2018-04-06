@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect
-from flask import url_for, flash, jsonify
+from flask import url_for, flash, jsonify, g
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, CategoryItem, User
@@ -225,11 +225,57 @@ def showCategory(category_name):
                             items=categoryItems)
 
 
+@app.route('/catalog/new', methods=['GET', 'POST'])
+def newCategory():
+    if 'username' not in login_session:
+        flash("You must be logged in to do that")
+        return redirect('/login')
+    if request.method == 'POST':
+        newCategory = Category(
+                                name=request.form['title'],
+                                user_id=getUserId(login_session['email']))
+        if session.query(Category).filter_by(name=newCategory.name).count():
+            flash("That category already exists, new category not created")
+            return redirect(url_for('showCatalog'))
+        session.add(newCategory)
+        session.commit()
+        flash("New Category Successfully Added")
+        return redirect(url_for('showCategory', category_name=newCategory.name))
+    else:
+        return render_template('newcategory.html')
+
+
+@app.route('/catalog/<string:category_name>/delete', methods=['GET', 'POST'])
+def deleteCategory(category_name):
+    if 'username' not in login_session:
+        flash("You must be logged in to do that")
+        return redirect('/login')
+    category = session.query(Category).filter_by(name=category_name).one()
+    creator = getUserInfo(category.user_id)
+    if (creator.id != login_session['user_id']):
+        flash("You are not authorized to delete this category.")
+        return redirect(url_for('showCatalog'))
+    deletedCategory = session.query(Category).filter_by(name=category_name).one()
+    if request.method == 'POST':
+        deletedItems = session.query(CategoryItem).filter_by(name=category_name).all()
+        for i in deletedItems:
+            session.delete(i)
+        session.delete(deletedCategory)
+        session.commit()
+        flash("Category successfully deleted")
+        return redirect(url_for('showCatalog'))
+    else:
+        return render_template(
+                            'deleteCategory.html',
+                            category_name=category_name,
+                            category=deletedCategory)
+
+
 @app.route('/catalog/<string:category_name>/<string:item_name>')
 def showItem(category_name, item_name):
     category = session.query(Category).filter_by(name=category_name).one()
     item = session.query(CategoryItem).filter_by(name=item_name).one()
-    creator = getUserInfo(category.user_id)
+    creator = getUserInfo(item.user_id)
     if (('username' not in login_session) or
        (creator.id != login_session['user_id'])):
         return render_template('publicitem.html', category=category, item=item)
@@ -251,7 +297,13 @@ def newItem(category_name):
         newItem = CategoryItem(
                             name=request.form['title'],
                             description=request.form['description'],
-                            category_id=category.id)
+                            category_id=category.id,
+                            user_id=getUserId(login_session['email']))
+        if session.query(CategoryItem).filter_by(name=newItem.name).count():
+            flash("That item already exists, new item not created")
+            return redirect(url_for(
+                            'showCategory',
+                            category_name=category_name))
         session.add(newItem)
         session.commit()
         flash("New item successfully added")
@@ -270,7 +322,8 @@ def editItem(category_name, item_name):
     if 'username' not in login_session:
         flash("You must be logged in to do that")
         return redirect('/login')
-    creator = getUserInfo(category.user_id)
+    category = session.query(Category).filter_by(name=category_name).one()
+    creator = getUserInfo(item.user_id)
     if (creator.id != login_session['user_id']):
         flash("You are not authorized to edit this item.")
         return redirect(url_for('showCategory', category_name=category_name))
@@ -299,14 +352,17 @@ def editItem(category_name, item_name):
 
 @app.route('/catalog/<string:category_name>/<string:item_name>/delete',
            methods=['GET', 'POST'])
+
 def deleteItem(category_name, item_name):
     if 'username' not in login_session:
         flash("You must be logged in to do that")
         return redirect('/login')
+    category = session.query(Category).filter_by(name=category_name).one()
+    deletedItem = session.query(CategoryItem).filter_by(name=item_name).one()
+    creator = getUserInfo(deletedItem.user_id)
     if (creator.id != login_session['user_id']):
         flash("You are not authorized to delete this item.")
         return redirect(url_for('showCategory', category_name=category_name))
-    deletedItem = session.query(CategoryItem).filter_by(name=item_name).one()
     if request.method == 'POST':
         session.delete(deletedItem)
         session.commit()
