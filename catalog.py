@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect
-from flask import url_for, flash, jsonify, g
+from flask import url_for, flash, jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, CategoryItem, User
@@ -29,6 +29,7 @@ session = DBSession()
 # Login
 @app.route('/login')
 def showLogin():
+    # Load Login HTML template
     state = ''.join(random.choice(
                 string.ascii_uppercase + string.digits)
                 for x in xrange(32))
@@ -128,6 +129,7 @@ def gconnect():
 
 @app.route('/gdisconnect')
 def gdisconnect():
+    # Disconnect from google account
     access_token = login_session.get('access_token')
     if access_token is None:
         print 'Access Token is None'
@@ -165,13 +167,14 @@ def gdisconnect():
 
 @app.route('/logout')
 def logout():
+    # Load logout HTML template
     return render_template('logout.html')
 
 
 # JSON APIs to view Sporting Goods Information
 @app.route('/catalog/<int:category_id>/JSON')
 def categoryJSON(category_id):
-    # category = session.query(Category).filter_by(id=category_id).one()
+    # Returns JSON endpoint for category
     categoryItems = session.query(CategoryItem).filter_by(
         category_id=category_id).all()
     return jsonify(categoryItems=[c.serialize for c in categoryItems])
@@ -179,12 +182,14 @@ def categoryJSON(category_id):
 
 @app.route('/catalog/<int:category_id>/<int:item_id>/JSON')
 def categoryItemJSON(category_id, item_id):
+    # Returns JSON endpoint for categoryItem
     category_item = session.query(CategoryItem).filter_by(id=item_id).one()
     return jsonify(category_item=category_item.serialize)
 
 
 @app.route('/catalog/JSON')
 def catalogJSON():
+    # Returns JSON endpoint for catalog
     categories = session.query(Category).all()
     return jsonify(categories=[c.serialize for c in categories])
 
@@ -192,6 +197,7 @@ def catalogJSON():
 @app.route('/')
 @app.route('/catalog/')
 def showCatalog():
+    # Loads catalog HTML template
     categories = session.query(Category).all()
     items = (
             session.query(CategoryItem)
@@ -204,13 +210,16 @@ def showCatalog():
                         session=login_session)
 
 
+# Display category and all items associated with that category
 @app.route('/catalog/<string:category_name>')
 def showCategory(category_name):
+    # Loads page for a specific category
     categories = session.query(Category).all()
     category = session.query(Category).filter_by(name=category_name).one()
     categoryItems = session.query(
                     CategoryItem).filter_by(category_id=category.id)
 
+    # Check if user is logged in
     if 'username' not in login_session:
         return render_template(
                             'publiccategory.html',
@@ -227,7 +236,9 @@ def showCategory(category_name):
 
 @app.route('/catalog/new', methods=['GET', 'POST'])
 def newCategory():
+    # If user is logged in, load form for adding new category
     if 'username' not in login_session:
+        # If user is not logged in, direct them to login page
         flash("You must be logged in to do that")
         return redirect('/login')
     if request.method == 'POST':
@@ -240,7 +251,9 @@ def newCategory():
         session.add(newCategory)
         session.commit()
         flash("New Category Successfully Added")
-        return redirect(url_for('showCategory', category_name=newCategory.name))
+        return redirect(url_for(
+                                'showCategory',
+                                category_name=newCategory.name))
     else:
         return render_template('newcategory.html')
 
@@ -248,16 +261,21 @@ def newCategory():
 @app.route('/catalog/<string:category_name>/delete', methods=['GET', 'POST'])
 def deleteCategory(category_name):
     if 'username' not in login_session:
+        # If user is not logged in, direct them to login page
         flash("You must be logged in to do that")
         return redirect('/login')
     category = session.query(Category).filter_by(name=category_name).one()
     creator = getUserInfo(category.user_id)
     if (creator.id != login_session['user_id']):
+        # If user did not create the category, they cannot delete
         flash("You are not authorized to delete this category.")
         return redirect(url_for('showCatalog'))
-    deletedCategory = session.query(Category).filter_by(name=category_name).one()
+    deletedCategory = session.query(
+                        Category).filter_by(name=category_name).one()
     if request.method == 'POST':
-        deletedItems = session.query(CategoryItem).filter_by(name=category_name).all()
+        # Delete all items linked to category, then delete category
+        deletedItems = session.query(
+                        CategoryItem).filter_by(name=category_name).all()
         for i in deletedItems:
             session.delete(i)
         session.delete(deletedCategory)
@@ -273,6 +291,7 @@ def deleteCategory(category_name):
 
 @app.route('/catalog/<string:category_name>/<string:item_name>')
 def showItem(category_name, item_name):
+    # Loads Item detail page
     category = session.query(Category).filter_by(name=category_name).one()
     item = session.query(CategoryItem).filter_by(name=item_name).one()
     creator = getUserInfo(item.user_id)
@@ -299,6 +318,7 @@ def newItem(category_name):
                             description=request.form['description'],
                             category_id=category.id,
                             user_id=getUserId(login_session['email']))
+        # Check if item exists, if so, do not add to DB
         if session.query(CategoryItem).filter_by(name=newItem.name).count():
             flash("That item already exists, new item not created")
             return redirect(url_for(
@@ -319,12 +339,14 @@ def newItem(category_name):
 @app.route('/catalog/<string:category_name>/<string:item_name>/edit',
            methods=['GET', 'POST'])
 def editItem(category_name, item_name):
+    # Edit item's name, description, and category
     if 'username' not in login_session:
         flash("You must be logged in to do that")
         return redirect('/login')
     category = session.query(Category).filter_by(name=category_name).one()
     creator = getUserInfo(item.user_id)
     if (creator.id != login_session['user_id']):
+        # If user did not create the item, they cannot edit
         flash("You are not authorized to edit this item.")
         return redirect(url_for('showCategory', category_name=category_name))
     editedItem = session.query(CategoryItem).filter_by(name=item_name).one()
@@ -352,7 +374,6 @@ def editItem(category_name, item_name):
 
 @app.route('/catalog/<string:category_name>/<string:item_name>/delete',
            methods=['GET', 'POST'])
-
 def deleteItem(category_name, item_name):
     if 'username' not in login_session:
         flash("You must be logged in to do that")
@@ -361,6 +382,7 @@ def deleteItem(category_name, item_name):
     deletedItem = session.query(CategoryItem).filter_by(name=item_name).one()
     creator = getUserInfo(deletedItem.user_id)
     if (creator.id != login_session['user_id']):
+        # If user did not create the item, they cannot edit
         flash("You are not authorized to delete this item.")
         return redirect(url_for('showCategory', category_name=category_name))
     if request.method == 'POST':
@@ -376,6 +398,7 @@ def deleteItem(category_name, item_name):
                             item=deletedItem)
 
 
+# If user does not exist, create new user
 def createUser(login_session):
     newUser = User(
                     name=login_session['username'],
@@ -386,12 +409,12 @@ def createUser(login_session):
     user = session.query(User).filter_by(email=login_session['email']).one()
     return user.id
 
-
+# Function takes in user id, and returns a user object
 def getUserInfo(user_id):
     user = session.query(User).filter_by(id=user_id).one()
     return user
 
-
+# Function takes in user email, and returns user id
 def getUserId(email):
     try:
         user = session.query(User).filter_by(email=email).one()
